@@ -10,3 +10,8 @@
 	<GL/gl.h>
 	<GL/glu.h>
 
+1763358625 source:c:\users\team4\desktop\parkour_game\game\main.cpp
+	<GLUT/glut.h>
+	<GL/glut.h>
+	<stdlib.h>
+
