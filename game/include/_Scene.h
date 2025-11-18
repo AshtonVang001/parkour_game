@@ -34,6 +34,9 @@ public:
     int width, height;
     int clickCount;
 
+    float animTime = 0.0f;
+
+
     _timer *myTime;
 
     _light *myLight;

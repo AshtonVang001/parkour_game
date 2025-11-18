@@ -16,7 +16,6 @@ _inputs::~_inputs()
 
 
 
-
 void _inputs::keyPressed(_skyBox* sky)
 {
     switch(wParam) {
@@ -46,11 +45,11 @@ void _inputs::keyPressed(_camera* myCamera, float deltaTime)
     //cout << wParam << endl;           //to get keyboard input
 
 
-    float moveSpeed = 50.0f * deltaTime;
+    float moveSpeed = 40.0f * deltaTime;
 
     // Sprint
     if (keys[16])
-        moveSpeed *= 2;
+        moveSpeed *= 1.5;
 
     // Forward / Back
     if (keys['W'])
@@ -63,6 +62,13 @@ void _inputs::keyPressed(_camera* myCamera, float deltaTime)
         myCamera->camMoveLtRt(-moveSpeed);
     if (keys['D'])
         myCamera->camMoveLtRt(moveSpeed);
+
+    // Jump
+    if (keys[VK_SPACE])  // Spacebar
+        myCamera->jump();
+
+    // Update vertical position
+    myCamera->updateVertical(deltaTime);
 }
 
 /*

@@ -122,7 +122,7 @@ void _Scene::initGL()
 
     // ---- Load GLTF Model ----
     myGltfModel = loader.loadModel("models/monkE1.glb");
-    myGltfModel2 = loader.loadModel("models/monkE3.glb");
+    myGltfModel2 = loader.loadModel("models/cuberotate.glb");
     ground = loader.loadModel("models/ground.glb");
 
     // ---- Load Model Texture ----
@@ -161,6 +161,8 @@ void _Scene::updateScene()
 
     static float smoothDT = 0.16f;
     smoothDT = (smoothDT * 0.9f) + (myTime->deltaTime * 0.1f);
+
+    animTime += myTime->deltaTime;
 
     if (myInput && myCam) {
         myInput->keyPressed(myCam, smoothDT);
@@ -234,22 +236,50 @@ void _Scene::drawScene()
         glPopMatrix();
     }
 
+
     if (myGltfModel2) {
-        glPushMatrix();
-            glTranslatef(5, 0, -20);
-            glScalef(1, 1, 1);
-            glColor3f(1,1,1);
+    glPushMatrix();
+        glTranslatef(5, 0, -20);   // position
+        glScalef(1, 1, 1);         // scale
+        glColor3f(1, 1, 1);
 
-            if (myGltfModel2->textureID != 0) {
-                glEnable(GL_TEXTURE_2D);
-                glBindTexture(GL_TEXTURE_2D, myGltfModel2->textureID);
-            }
+        // Bind texture if available
+        if (myGltfModel2->textureID != 0) {
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, myGltfModel2->textureID);
+        }
 
-            myGltfModel2->draw();
+        // Update animation every frame
+        if (myGltfModel2->data && myGltfModel2->data->animations_count > 0) {
+            myGltfModel2->updateAnimation(animTime);
+        }
 
-            if (myGltfModel2->textureID != 0) glBindTexture(GL_TEXTURE_2D, 0);
-        glPopMatrix();
+        // Draw all nodes recursively using global transforms
+        myGltfModel2->draw();
+
+        // Unbind texture
+        if (myGltfModel2->textureID != 0) glBindTexture(GL_TEXTURE_2D, 0);
+            glPopMatrix();
     }
+
+
+
+
+
+    /**
+    glPushMatrix();
+    glTranslatef(0,0,-5);
+    glRotatef(animTime * 50.0f, 0,1,0); // spin around Y
+    if (myGltfModel2->textureID != 0) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, myGltfModel2->textureID);
+    }
+    myGltfModel2->draw();
+    glPopMatrix();
+    **/
+
+
+
 
     glPushMatrix();
         glTranslatef(0, -3, 0);

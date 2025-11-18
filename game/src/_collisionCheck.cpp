@@ -1,4 +1,4 @@
-
+/**
 #include "_collisionCheck.h"
 
 _collisionCheck::_collisionCheck()
@@ -35,9 +35,10 @@ bool _collisionCheck::isCubicCol(vec3, vec3)
 {
 
 }
+**/
 
 
-/**
+
 #include "_collisionCheck.h"
 
 // ---------- BASIC VEC2/VEC3 MATH (NO GLM) ----------
@@ -265,4 +266,3 @@ float _collisionCheck::pointPlaneSignedDistance(const vec3& point,
     vec3 N = v3normalize(planeNormal);
     return v3dot( v3sub(point, planePoint), N );
 }
-**/

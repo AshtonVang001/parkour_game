@@ -2,6 +2,9 @@
 
 #include <string>
 #include <_common.h>
+#include "cgltf.h"
+#include <iostream>
+#include <SOIL2.h>
 
 class GltfModel;
 
@@ -11,4 +14,5 @@ public:
     ~_gltfLoader();
 
     GltfModel* loadModel(const std::string& filename);
+    cgltf_data* data = nullptr;
 };

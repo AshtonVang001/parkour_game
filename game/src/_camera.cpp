@@ -25,6 +25,11 @@ void _camera::camInit()
     distance = sqrt(pow((eye.x-des.x),2) + pow((eye.y-des.y),2) + pow((eye.z-des.z),2));
 
     rotAngle.x = rotAngle.y = 0;
+
+    verticalVel = 0.0f;
+    isJumping = false;
+    gravity = -40.0f;   // stronger than real gravity for game feel
+    groundY = eye.y;
 }
 
 void _camera::camReset()
@@ -71,4 +76,28 @@ void _camera::camMoveLtRt(float dir)
 void _camera::setUpCamera()
 {
     gluLookAt(eye.x, eye.y, eye.z, des.x, des.y, des.z, up.x, up.y, up.z);
+}
+
+void _camera::jump()
+{
+    if (!isJumping) {
+        verticalVel = 15.0f;   // jump strength
+        isJumping = true;
+    }
+}
+
+void _camera::updateVertical(float deltaTime)
+{
+    if (isJumping) {
+        verticalVel += gravity * deltaTime;    // gravity
+        eye.y += verticalVel * deltaTime;
+        des.y += verticalVel * deltaTime;
+
+        if (eye.y <= groundY) {               // landed
+            eye.y = groundY;
+            des.y = groundY;
+            verticalVel = 0.0f;
+            isJumping = false;
+        }
+    }
 }
