@@ -1,0 +1,50 @@
+#ifndef _CAMERA_H
+#define _CAMERA_H
+
+#include <_common.h>
+#include <_collisionCheck.h>
+#include <_gltfLoader.h>
+#include <gltfModel.h>
+
+class gltfModel;
+class _collisionCheck;
+
+class _camera
+{
+    public:
+        _camera();
+        virtual ~_camera();
+
+        vec3 eye;                   //eye position
+        vec3 des;                   //where you are looking at
+        vec3 up;                    //camera head orientation
+
+        float step;                 //camera speed
+        vec3 rotAngle;              //rotation of camera
+        float distance;             //eye to source
+
+        enum {FORWARD, BACKWARD, LEFT, RIGHT};
+
+        float gravity;  // gravity strength
+        float groundOffset;
+        vec3 velocity;
+        vec3 pos;
+
+        void camInit();             //initialize camera
+        void camReset();            //reset camera
+        void update(float deltaTime, _collisionCheck* colCheck, gltfModel* groundMesh);
+
+        void rotateXY();            //rotate XY direction
+        void rotateUp();            //rotate up & down
+
+        void camMoveFdBd(float dir);  //move camera forward & backward
+        void camMoveLtRt(float dir);  //move camera left & right
+
+        void setUpCamera();         //set camera using glulookat
+
+    protected:
+
+    private:
+};
+
+#endif // _CAMERA_H
