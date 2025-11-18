@@ -8,6 +8,7 @@ _Scene::_Scene()
     myTime = new _timer();
     clickCount = 0;
 
+
     // Set all pointers null until initGL()
     myLight = nullptr;
     myModel = nullptr;
@@ -162,9 +163,24 @@ void _Scene::updateScene()
     static float smoothDT = 0.16f;
     smoothDT = (smoothDT * 0.9f) + (myTime->deltaTime * 0.1f);
 
+    POINT mousePos;
+    GetCursorPos(&mousePos);
+    ScreenToClient(hWnd, &mousePos);
+
+    int dx = mousePos.x - (width / 2);
+    int dy = mousePos.y - (height / 2);
+    if(myCam){
+        myCam->addMouseDelta(dx, dy);
+    }
+    SetCursorPos(width / 2, height / 2);
+
     if (myInput && myCam) {
         myInput->keyPressed(myCam, smoothDT);
         //myCam->update(smoothDT, myCol, ground);
+    }
+
+    if(myCam){
+        myCam->updateRotation();
     }
 }
 
@@ -298,7 +314,7 @@ int _Scene::winMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     case WM_MOUSEMOVE:
         myInput->mouseMove(myModel, LOWORD(lParam), HIWORD(lParam));
-        myInput->mouseMove(myCam, LOWORD(lParam), HIWORD(lParam));
+        //myInput->mouseMove(myCam, LOWORD(lParam), HIWORD(lParam));
         break;
 
     case WM_MOUSEWHEEL:

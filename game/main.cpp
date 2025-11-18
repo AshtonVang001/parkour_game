@@ -352,20 +352,21 @@ int WINAPI WinMain(
     int	fullscreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
 	// Ask The User Which Screen Mode They Prefer
-	if (MessageBox(NULL,"Would You Like To Run In Fullscreen Mode?", "Start FullScreen?",MB_YESNO|MB_ICONQUESTION)==IDNO)
-	{
-		fullscreen=FALSE;			    // Windowed Mode
-	}
-
+	//if (MessageBox(NULL,"Would You Like To Run In Fullscreen Mode?", "Start FullScreen?",MB_YESNO|MB_ICONQUESTION)==IDNO)
+	//{
+		//fullscreen=FALSE;			    // Windowed Mode
+	//}
+    fullscreen=TRUE;
 	// Create Our OpenGL Window
 
 	if (!CreateGLWindow("Game Engine Lesson 01",fullscreenWidth,fullscreenHeight,256,fullscreen))
 	{
 		return 0;				        // Quit If Window Was Not Created
 	}
-
+    myScene->hWnd = hWnd;
     myScene->initGL();
     myScene->reSizeScene(fullscreenWidth, fullscreenHeight);
+    ShowCursor(FALSE);      //Change this if we want mouse in menus!!!
 
 
 	while(!done)					    // Loop That Runs While done=FALSE

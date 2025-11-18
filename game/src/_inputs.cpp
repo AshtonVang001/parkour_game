@@ -46,7 +46,7 @@ void _inputs::keyPressed(_camera* myCamera, float deltaTime)
     //cout << wParam << endl;           //to get keyboard input
 
 
-    float moveSpeed = 50.0f * deltaTime;
+    float moveSpeed = 10.0f * deltaTime;        //this num changes mvmnt speed
 
     // Sprint
     if (keys[16])
@@ -54,15 +54,15 @@ void _inputs::keyPressed(_camera* myCamera, float deltaTime)
 
     // Forward / Back
     if (keys['W'])
-        myCamera->camMoveFdBd(-moveSpeed);
+        myCamera->moveForward(moveSpeed);
     if (keys['S'])
-        myCamera->camMoveFdBd(moveSpeed);
+        myCamera->moveForward(-moveSpeed);
 
     // Left / Right
     if (keys['A'])
-        myCamera->camMoveLtRt(-moveSpeed);
+        myCamera->moveRight(-moveSpeed);
     if (keys['D'])
-        myCamera->camMoveLtRt(moveSpeed);
+        myCamera->moveRight(moveSpeed);
 }
 
 /*
@@ -162,11 +162,21 @@ void _inputs::mouseMove(_model* mdl, double x, double y)
     prev_MouseY = y;                                        //reset mouse y
 }
 
-void _inputs::mouseMove(_camera* myCamera, double x, double y)
+void _inputs::mouseMove(_camera* cam, double x, double y)
 {
 
-    myCamera->rotAngle.y = (y / 10.0);
-    myCamera->rotAngle.x = (x / 10.0);
-    //myCamera->rotateXY();
+    /*float cx = screenWidth / 2;
+    float cy = screenHeight / 2;
+
+    float dx = x - cx;
+    float dy = y - cy;
+
+    cam->yaw += dx * cam->sensitivity;
+    cam->pitch -= dy * cam->sensitivity;
+
+    cam->updateRotation();
+
+    //recenter the mouse
+    SetCursorPos(cx, cy);*/
 
 }
