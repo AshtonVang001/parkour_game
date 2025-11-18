@@ -42,11 +42,13 @@ class _camera
         // In _camera.h
         void jump();
         void updateVertical(float);
+        float lerp(float, float, float);
 
         float verticalVel;   // vertical velocity for jump
         bool isJumping;      // true while in the air
         float gravity;       // e.g., -9.8 units/sec^2
         float groundY;       // the Y position of the floor
+
 
 
     protected:

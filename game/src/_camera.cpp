@@ -31,6 +31,7 @@ void _camera::camInit()
     gravity = -40.0f;   // stronger than real gravity for game feel
     groundY = eye.y;
 
+
 }
 
 void _camera::camReset()
@@ -133,16 +134,37 @@ void _camera::jump()
 
 void _camera::updateVertical(float deltaTime)
 {
-    if (isJumping) {
-        verticalVel += gravity * deltaTime;    // gravity
-        eye.y += verticalVel * deltaTime;
-        des.y += verticalVel * deltaTime;
+    // JUMP PHYSICS
+    if (isJumping)
+    {
+        verticalVel += gravity * deltaTime;
+        float nextY = eye.y + verticalVel * deltaTime;
 
-        if (eye.y <= groundY) {               // landed
-            eye.y = groundY;
-            des.y = groundY;
+        // Landing
+        if (nextY <= groundY)
+        {
+            nextY = groundY;
             verticalVel = 0.0f;
             isJumping = false;
         }
+
+        targetY = nextY;
     }
+    else
+    {
+        targetY = groundY;
+    }
+
+    // Smooth ONLY when on ground
+    if (!isJumping)
+    {
+        float snapSpeed = 6.0f;       // adjust higher/lower for feel
+        eye.y += (targetY - eye.y) * snapSpeed * deltaTime;
+    }
+    else
+    {
+        eye.y = targetY;   // No smoothing in air
+    }
+
+    // IMPORTANT: DO NOT TOUCH des.y HERE
 }

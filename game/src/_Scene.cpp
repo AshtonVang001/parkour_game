@@ -162,6 +162,9 @@ void _Scene::updateScene()
     static float smoothDT = 0.16f;
     smoothDT = (smoothDT * 0.9f) + (myTime->deltaTime * 0.1f);
 
+    //myCam->updateVertical(myTime->deltaTime);
+    myCam->rotateXY();
+
     animTime += myTime->deltaTime;
 
     if (myInput && myCam) {
