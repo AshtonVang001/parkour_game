@@ -53,15 +53,15 @@ void _inputs::keyPressed(_camera* myCamera, float deltaTime)
 
     // Forward / Back
     if (keys['W'])
-        myCamera->camMoveFdBd(-moveSpeed);
-    if (keys['S'])
         myCamera->camMoveFdBd(moveSpeed);
+    if (keys['S'])
+        myCamera->camMoveFdBd(-moveSpeed);
 
     // Left / Right
     if (keys['A'])
-        myCamera->camMoveLtRt(-moveSpeed);
-    if (keys['D'])
         myCamera->camMoveLtRt(moveSpeed);
+    if (keys['D'])
+        myCamera->camMoveLtRt(-moveSpeed);
 
     // Jump
     if (keys[VK_SPACE])  // Spacebar
@@ -153,26 +153,18 @@ void _inputs::mouseWheel(_model* mdl, double delta)
 
 
 
-void _inputs::mouseMove(_model* mdl, double x, double y)
-{
-    if(isRotationActive){                                   //if rotation
-        mdl->rotateY += (x - prev_MouseX) / 3.0;            //around y axis
-        mdl->rotateX += (y - prev_MouseY) / 3.0;            //around x axis
-    }
-    if(isTranslationActive){                                //if translation
-        mdl->posX += (x - prev_MouseX) / 100.0;             //change x position
-        mdl->posY -= (y - prev_MouseY) / 100.0;             //change y position
-    }
-
-    prev_MouseX = x;                                        //reset mouse x
-    prev_MouseY = y;                                        //reset mouse y
-}
-
 void _inputs::mouseMove(_camera* myCamera, double x, double y)
 {
+    float sensitivity = 0.1f; // tweak for mouse speed
 
-    myCamera->rotAngle.y = (y / 10.0);
-    myCamera->rotAngle.x = (x / 10.0);
-    //myCamera->rotateXY();
+    double deltaX = x - prev_MouseX;
+    double deltaY = y - prev_MouseY;
 
+    myCamera->rotAngle.x += -deltaX * sensitivity; // yaw
+    myCamera->rotAngle.y += -deltaY * sensitivity; // pitch (invert Y)
+
+    myCamera->rotateXY(); // update des based on rotation
+
+    prev_MouseX = x;
+    prev_MouseY = y;
 }

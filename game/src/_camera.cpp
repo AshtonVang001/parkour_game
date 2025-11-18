@@ -30,6 +30,7 @@ void _camera::camInit()
     isJumping = false;
     gravity = -40.0f;   // stronger than real gravity for game feel
     groundY = eye.y;
+
 }
 
 void _camera::camReset()
@@ -51,10 +52,20 @@ void _camera::camReset()
 
 void _camera::rotateXY()
 {
-    eye.x = des.x + distance * cos(rotAngle.y * PI/180.0) * sin(rotAngle.x * PI/180.0);
-    eye.y = des.y + distance * sin(rotAngle.y * PI/180.0);
-    eye.z = des.z + distance * cos(rotAngle.y * PI/180.0) * cos(rotAngle.x * PI/180.0);
+    // Clamp vertical rotation to prevent flipping
+    if (rotAngle.y > 89.0f) rotAngle.y = 89.0f;
+    if (rotAngle.y < -89.0f) rotAngle.y = -89.0f;
+
+    // Convert angles to radians
+    float yaw = rotAngle.x * PI / 180.0f;   // left-right
+    float pitch = rotAngle.y * PI / 180.0f; // up-down
+
+    // Calculate direction vector
+    des.x = eye.x + cos(pitch) * sin(yaw);
+    des.y = eye.y + sin(pitch);
+    des.z = eye.z + cos(pitch) * cos(yaw);
 }
+
 
 void _camera::rotateUp()
 {
@@ -63,15 +74,49 @@ void _camera::rotateUp()
 
 void _camera::camMoveFdBd(float dir)
 {
-    eye.z += step * dir;            //if forward, dir = 1, else dir = -1
-    des.z += step * dir;
+    // Forward vector (ignore Y)
+    vec3 forward = des - eye;
+    forward.y = 0;
+    float len = sqrt(forward.x*forward.x + forward.z*forward.z);
+    if (len != 0)
+    {
+        forward.x /= len;
+        forward.z /= len;
+    }
+
+    // Move in the correct direction: W = +dir
+    eye.x += forward.x * dir;
+    eye.z += forward.z * dir;
+    des.x += forward.x * dir;
+    des.z += forward.z * dir;
 }
 
 void _camera::camMoveLtRt(float dir)
 {
-    eye.x += step * dir;
-    des.x += step * dir;
+    // Forward vector (ignore Y)
+    vec3 forward = des - eye;
+    forward.y = 0;
+    float len = sqrt(forward.x*forward.x + forward.z*forward.z);
+    if (len != 0)
+    {
+        forward.x /= len;
+        forward.z /= len;
+    }
+
+    // Right vector (perpendicular in XZ plane)
+    vec3 right;
+    right.x = forward.z;
+    right.y = 0;
+    right.z = -forward.x;
+
+    // Move in the correct direction: D = +dir, A = -dir
+    eye.x += right.x * dir;
+    eye.z += right.z * dir;
+    des.x += right.x * dir;
+    des.z += right.z * dir;
 }
+
+
 
 void _camera::setUpCamera()
 {

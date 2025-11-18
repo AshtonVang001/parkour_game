@@ -52,7 +52,7 @@ void _Scene::reSizeScene(int width, int height)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0f, aspectRatio, 0.1f, 1000.0f);
+    gluPerspective(fov, aspectRatio, 0.1f, 1000.0f);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -327,7 +327,6 @@ int _Scene::winMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_MOUSEMOVE:
-        myInput->mouseMove(myModel, LOWORD(lParam), HIWORD(lParam));
         myInput->mouseMove(myCam, LOWORD(lParam), HIWORD(lParam));
         break;
 

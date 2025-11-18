@@ -36,6 +36,8 @@ public:
 
     float animTime = 0.0f;
 
+    float fov = 60.0f; // default is 45.0
+
 
     _timer *myTime;
 

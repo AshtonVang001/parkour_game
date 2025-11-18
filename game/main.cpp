@@ -244,6 +244,7 @@ BOOL CreateGLWindow(char* title, int width, int height, int bits, bool fullscree
 	myScene->initGL();                                      //initialize GL scene
 	myScene->reSizeScene(width, height);
 
+	ShowCursor(FALSE);
 
 	return TRUE;							                // Success
 }
@@ -395,6 +396,19 @@ int WINAPI WinMain(
 			    myTimer.updateDeltaTime();                // UPDATE deltaTime ONCE PER FRAME
 
                 myScene->updateScene();                   // update with delta time
+
+
+                // Center the cursor
+                POINT center;
+                center.x = fullscreenWidth / 2;
+                center.y = fullscreenHeight / 2;
+                SetCursorPos(center.x, center.y);
+
+                // Update previous mouse positions to the center so next delta is relative
+                myScene->myInput->prev_MouseX = center.x;
+                myScene->myInput->prev_MouseY = center.y;
+
+
                 myScene->drawScene();                     // draw after update
 
 				SwapBuffers(hDC);	    // Swap Buffers (Double Buffering)
