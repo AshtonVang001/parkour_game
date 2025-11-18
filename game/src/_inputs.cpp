@@ -8,11 +8,6 @@ _inputs::_inputs()
     //isScalingActive = false;
 }
 
-
-
-
-
-
 _inputs::~_inputs()
 {
     //dtor
@@ -21,53 +16,6 @@ _inputs::~_inputs()
 
 
 
-
-void _inputs::keyPressed(_model* mdl)
-{
-    switch(wParam) {
-    case VK_LEFT:
-        mdl->rotateY += 1.0;
-        break;
-    case VK_RIGHT:
-        mdl->rotateY -= 1.0;
-        break;
-    case VK_UP:
-        mdl->rotateX += 1.0;
-        break;
-    case VK_DOWN:
-        mdl->rotateX -= 1.0;
-        break;
-    case VK_ADD:
-        mdl->rotateZ += 1.0;
-        break;
-    case VK_SUBTRACT:
-        mdl->rotateZ -= 1.0;
-        break;
-    }
-}
-
-void _inputs::keyPressed(_parallax* prlx) {
-    switch(wParam) {
-    case VK_LEFT:
-        prlx->prlxScrollAuto("right", 0.005);
-        break;
-    case VK_RIGHT:
-        prlx->prlxScrollAuto("left", 0.005);
-        break;
-    case VK_UP:
-        //prlx->
-        break;
-    case VK_DOWN:
-        //prlx->
-        break;
-    case VK_ADD:
-        //prlx->
-        break;
-    case VK_SUBTRACT:
-        //prlx->
-        break;
-    }
-}
 
 void _inputs::keyPressed(_skyBox* sky)
 {
@@ -93,68 +41,31 @@ void _inputs::keyPressed(_skyBox* sky)
     }
 }
 
-void _inputs::keyPressed(_sprite* mySprite)
-{
-    switch(wParam) {
-    case VK_RIGHT:
-        mySprite->actionTrigger = mySprite->WALKRIGHT;
-        break;
-    case VK_LEFT:
-        mySprite->actionTrigger = mySprite->WALKLEFT;
-        break;
-    }
-}
-
-void _inputs::keyPressed(_camera* myCamera)
+void _inputs::keyPressed(_camera* myCamera, float deltaTime)
 {
     //cout << wParam << endl;           //to get keyboard input
 
-    switch(wParam) {
-    case 83:
-        myCamera->camMoveFdBd(1);
-        break;
-    case 87:
-        myCamera->camMoveFdBd(-1);
-        break;
-    case 68:
-        myCamera->camMoveLtRt(1);
-        break;
-    case 65:
-        myCamera->camMoveLtRt(-1);
-        break;
 
-    /**
-    case 73:        //i
-        myCamera->rotAngle.y -= 1.0;
-        myCamera->rotateXY();
-        break;
-    case 74:        //j
-        myCamera->rotAngle.x += 1.0;
-        myCamera->rotateXY();
-        break;
-    case 75:        //k
-        myCamera->rotAngle.y += 1.0;
-        myCamera->rotateXY();
-        break;
-    case 76:        //l
-        myCamera->rotAngle.x -= 1.0;
-        myCamera->rotateXY();
-        break;
-    case 32:        //space bar
-        myCamera->camReset();
-        break;
-    **/
-    }
+    float moveSpeed = 50.0f * deltaTime;
 
+    // Sprint
+    if (keys[16])
+        moveSpeed *= 2;
 
-    /*********************************************************
-    if(GetKeyState('W') & 0x8000) {myCamera->camMoveFdBd(-1);}
-    if(GetKeyState('S') & 0x8000) {myCamera->camMoveFdBd(1);}
-    if(GetKeyState('A') & 0x8000) {myCamera->camMoveLtRt(-1);}
-    if(GetKeyState('D') & 0x8000) {myCamera->camMoveLtRt(1);}
-    *********************************************************/
+    // Forward / Back
+    if (keys['W'])
+        myCamera->camMoveFdBd(-moveSpeed);
+    if (keys['S'])
+        myCamera->camMoveFdBd(moveSpeed);
+
+    // Left / Right
+    if (keys['A'])
+        myCamera->camMoveLtRt(-moveSpeed);
+    if (keys['D'])
+        myCamera->camMoveLtRt(moveSpeed);
 }
 
+/*
 void _inputs::keyPressed(_3DModelLoader* Ply, _3DModelLoader* Wpn)
 {
     switch(wParam) {
@@ -175,8 +86,7 @@ void _inputs::keyPressed(_3DModelLoader* Ply, _3DModelLoader* Wpn)
             break;
     }
 }
-
-
+*/
 
 
 
@@ -188,11 +98,6 @@ void _inputs::keyUp()
         default: break;
     }
 }
-
-void _inputs::keyUp(_sprite* mySprite) {
-        mySprite->actionTrigger = mySprite->STAND;
-}
-
 
 
 

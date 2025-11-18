@@ -14,13 +14,15 @@ class _inputs
         _inputs();
         virtual ~_inputs();
 
+        bool keys[256] = {false};
+
         void keyPressed(_model *);                          //key pressed
         void keyUp();                                       //key released              (blank because not in use)
 
         void keyPressed(_parallax *);
         void keyPressed(_skyBox *);
         void keyPressed(_sprite *);
-        void keyPressed(_camera *);
+        void keyPressed(_camera *, float);
         void keyPressed(_3DModelLoader *,  _3DModelLoader *);
 
         void keyUp(_sprite *);

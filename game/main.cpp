@@ -13,10 +13,12 @@
 #include <iostream>
 #include <windows.h>	// Header File For Windows
 #include <_common.h>
+#include <_timer.h>
 
 #include <_Scene.h>
 
 _Scene *myScene = new _Scene();     //create scene class instance
+_timer myTimer;
 
 using namespace std;
 
@@ -390,7 +392,11 @@ int WINAPI WinMain(
 			}
 			else				        // Not Time To Quit, Update Screen
 			{
-			    myScene->drawScene();
+			    myTimer.updateDeltaTime();                // UPDATE deltaTime ONCE PER FRAME
+
+                myScene->updateScene();                   // update with delta time
+                myScene->drawScene();                     // draw after update
+
 				SwapBuffers(hDC);	    // Swap Buffers (Double Buffering)
 			}
 

@@ -123,14 +123,16 @@ void _Scene::initGL()
     // ---- Load GLTF Model ----
     myGltfModel = loader.loadModel("models/monkE1.glb");
     myGltfModel2 = loader.loadModel("models/monkE3.glb");
+    ground = loader.loadModel("models/ground.glb");
 
     // ---- Load Model Texture ----
-    GLuint texID = testTexture->loadTexture("images/tex3.jpg");
+    GLuint texID = testTexture->loadTexture("images/test_texture.jpg");
     GLuint texID2 = testTexture->loadTexture("images/red.png");
 
     // ---- Bind Model Texture
     myGltfModel->textureID = texID;
     myGltfModel2->textureID = texID2;
+    ground->textureID = texID;
 
     if (!myGltfModel) {
         std::cerr << "GLTF: Failed to load model\n";
@@ -150,6 +152,22 @@ void _Scene::initGL()
                 << ", textureID: " << myGltfModel2->textureID << "\n";
     }
 }
+
+
+
+void _Scene::updateScene()
+{
+    myTime->updateDeltaTime();
+
+    static float smoothDT = 0.16f;
+    smoothDT = (smoothDT * 0.9f) + (myTime->deltaTime * 0.1f);
+
+    if (myInput && myCam) {
+        myInput->keyPressed(myCam, smoothDT);
+        //myCam->update(smoothDT, myCol, ground);
+    }
+}
+
 
 void _Scene::drawScene()
 {
@@ -184,8 +202,8 @@ void _Scene::drawScene()
         glScalef(0.1f, 0.1f, 0.1f);
 
         mdl3D->Actions();
-        mdl3D->Draw();
-        mdl3DW->Draw();
+        //mdl3D->Draw();
+        //mdl3DW->Draw();
     glPopMatrix();
 
     // Bullets
@@ -219,7 +237,7 @@ void _Scene::drawScene()
     if (myGltfModel2) {
         glPushMatrix();
             glTranslatef(5, 0, -20);
-            glScalef(1, 1, 1); // Adjust size as needed
+            glScalef(1, 1, 1);
             glColor3f(1,1,1);
 
             if (myGltfModel2->textureID != 0) {
@@ -232,6 +250,13 @@ void _Scene::drawScene()
             if (myGltfModel2->textureID != 0) glBindTexture(GL_TEXTURE_2D, 0);
         glPopMatrix();
     }
+
+    glPushMatrix();
+        glTranslatef(0, -3, 0);
+        glScalef(1, 1, 1);
+        glColor3f(1,1,1);
+        ground->draw();
+    glPopMatrix();
 }
 
 int _Scene::winMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -240,19 +265,14 @@ int _Scene::winMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
     case WM_KEYDOWN:
         myInput->wParam = wParam;
-        myInput->keyPressed(myModel);
-        myInput->keyPressed(myPrlx);
         myInput->keyPressed(mySkyBox);
-        myInput->keyPressed(mySprite);
-        myInput->keyPressed(myCam);
-        myInput->keyPressed(mdl3D, mdl3DW);
+        //myInput->keyPressed(myCam);
+        myInput->keys[wParam] = true;
         break;
 
     case WM_KEYUP:
         myInput->wParam = wParam;
-        myInput->keyUp(mySprite);
-        mdl3D->actionTrigger = mdl3D->STAND;
-        mdl3DW->actionTrigger = mdl3DW->STAND;
+        myInput->keys[wParam] = false;
         break;
 
     case WM_LBUTTONDOWN:

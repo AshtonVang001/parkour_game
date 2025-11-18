@@ -26,6 +26,7 @@ public:
     void initGL();
     void reSizeScene(int width, int height);
     void drawScene();
+    void updateScene();
     int winMsg(HWND, UINT, WPARAM, LPARAM);
     void mouseMapping(int, int);
 
@@ -47,14 +48,20 @@ public:
     _camera *myCam;
     _collisionCheck *myCol;
     _sounds *snds;
-    _textureLoader *testTexture = new _textureLoader();
-    _textureLoader *testTexture2 = new _textureLoader();
 
     _bullets b[10];
 
+    //load models
     _gltfLoader loader;
     GltfModel* myGltfModel;
     GltfModel* myGltfModel2;
+    GltfModel* ground;
+
+    //load model texture
+    _textureLoader *testTexture = new _textureLoader();
+    _textureLoader *testTexture2 = new _textureLoader();
+    _textureLoader *groundTexture = new _textureLoader();
+
 
 protected:
 

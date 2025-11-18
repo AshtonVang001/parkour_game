@@ -56,13 +56,13 @@ void _camera::rotateUp()
 
 }
 
-void _camera::camMoveFdBd(int dir)
+void _camera::camMoveFdBd(float dir)
 {
     eye.z += step * dir;            //if forward, dir = 1, else dir = -1
     des.z += step * dir;
 }
 
-void _camera::camMoveLtRt(int dir)
+void _camera::camMoveLtRt(float dir)
 {
     eye.x += step * dir;
     des.x += step * dir;
