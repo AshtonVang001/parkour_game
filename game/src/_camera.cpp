@@ -53,18 +53,18 @@ void _camera::camReset()
 
 void _camera::rotateXY()
 {
-    // Clamp vertical rotation to prevent flipping
+    // Clamp pitch
     if (rotAngle.y > 89.0f) rotAngle.y = 89.0f;
     if (rotAngle.y < -89.0f) rotAngle.y = -89.0f;
 
-    // Convert angles to radians
-    float yaw = rotAngle.x * PI / 180.0f;   // left-right
-    float pitch = rotAngle.y * PI / 180.0f; // up-down
+    float yaw   = rotAngle.x * PI / 180.0f;
+    float pitch = rotAngle.y * PI / 180.0f;
 
-    // Calculate direction vector
-    des.x = eye.x + cos(pitch) * sin(yaw);
-    des.y = eye.y + sin(pitch);
-    des.z = eye.z + cos(pitch) * cos(yaw);
+    lookDir.x = cos(pitch) * sin(yaw);
+    lookDir.y = sin(pitch);
+    lookDir.z = cos(pitch) * cos(yaw);
+
+    des = eye + lookDir;
 }
 
 
@@ -132,15 +132,14 @@ void _camera::jump()
     }
 }
 
+
 void _camera::updateVertical(float deltaTime)
 {
-    // JUMP PHYSICS
     if (isJumping)
     {
         verticalVel += gravity * deltaTime;
         float nextY = eye.y + verticalVel * deltaTime;
 
-        // Landing
         if (nextY <= groundY)
         {
             nextY = groundY;
@@ -148,23 +147,9 @@ void _camera::updateVertical(float deltaTime)
             isJumping = false;
         }
 
-        targetY = nextY;
-    }
-    else
-    {
-        targetY = groundY;
-    }
+        eye.y = nextY;
 
-    // Smooth ONLY when on ground
-    if (!isJumping)
-    {
-        float snapSpeed = 6.0f;       // adjust higher/lower for feel
-        eye.y += (targetY - eye.y) * snapSpeed * deltaTime;
+        // do NOT modify des.y
+        des = eye + lookDir;
     }
-    else
-    {
-        eye.y = targetY;   // No smoothing in air
-    }
-
-    // IMPORTANT: DO NOT TOUCH des.y HERE
 }

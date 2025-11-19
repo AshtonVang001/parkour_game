@@ -49,6 +49,10 @@ class _camera
         float gravity;       // e.g., -9.8 units/sec^2
         float groundY;       // the Y position of the floor
 
+        float targetY;
+        vec3 lookDir;
+
+
 
 
     protected:
