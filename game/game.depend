@@ -10,16 +10,18 @@
 	<GL/gl.h>
 	<GL/glu.h>
 
-1763505943 source:c:\users\team4\desktop\parkour_game\game\main.cpp
+1763527954 source:c:\users\team4\desktop\parkour_game\game\main.cpp
 	<windows.h>
 	<stdlib.h>
 	<iostream>
 	<windows.h>
 	<_common.h>
 	<_timer.h>
+	<_sceneSwitcher.h>
 	<_Scene.h>
+	<_mainMenu.h>
 
-1763505943 c:\users\team4\desktop\parkour_game\game\include\_scene.h
+1763522703 c:\users\team4\desktop\parkour_game\game\include\_scene.h
 	<_common.h>
 	<_light.h>
 	<_model.h>
@@ -35,6 +37,7 @@
 	<_collisionCheck.h>
 	<_sounds.h>
 	<_gltfLoader.h>
+	<_sceneSwitcher.h>
 	<_common.h>
 	<_light.h>
 	<_model.h>
@@ -70,7 +73,7 @@
 
 1763505943 c:\users\team4\desktop\parkour_game\game\include\_model.h
 
-1763505943 c:\users\team4\desktop\parkour_game\game\include\_inputs.h
+1763523911 c:\users\team4\desktop\parkour_game\game\include\_inputs.h
 	<_common.h>
 	<_model.h>
 	<_parallax.h>
@@ -78,6 +81,7 @@
 	<_sprite.h>
 	<_camera.h>
 	<_3DModelLoader.h>
+	<_sceneSwitcher.h>
 
 1763505943 c:\users\team4\desktop\parkour_game\game\include\_parallax.h
 	<_common.h>
@@ -243,14 +247,14 @@
 1763505943 source:c:\users\team4\desktop\parkour_game\game\src\_bullets.cpp
 	"_bullets.h"
 
-1763505943 source:c:\users\team4\desktop\parkour_game\game\src\_camera.cpp
+1763518194 source:c:\users\team4\desktop\parkour_game\game\src\_camera.cpp
 	"_camera.h"
 
 1763505943 source:c:\users\team4\desktop\parkour_game\game\src\_collisioncheck.cpp
 	"_collisionCheck.h"
 	"_collisionCheck.h"
 
-1763505943 source:c:\users\team4\desktop\parkour_game\game\src\_inputs.cpp
+1763523590 source:c:\users\team4\desktop\parkour_game\game\src\_inputs.cpp
 	"_inputs.h"
 
 1763505943 source:c:\users\team4\desktop\parkour_game\game\src\_light.cpp
@@ -263,7 +267,7 @@
 1763505943 source:c:\users\team4\desktop\parkour_game\game\src\_parallax.cpp
 	"_parallax.h"
 
-1763505943 source:c:\users\team4\desktop\parkour_game\game\src\_scene.cpp
+1763527534 source:c:\users\team4\desktop\parkour_game\game\src\_scene.cpp
 	"_Scene.h"
 	"gltfModel.h"
 	"_gltfLoader.h"
@@ -1324,4 +1328,34 @@
 	<_collisionCheck.h>
 	<_sounds.h>
 	<_gltfLoader.h>
+
+1763526228 source:c:\users\team4\desktop\parkour_game\game\src\_mainmenu.cpp
+	"_mainMenu.h"
+	"gltfModel.h"
+	"_gltfLoader.h"
+	<iostream>
+
+1763525969 c:\users\team4\desktop\parkour_game\game\include\_mainmenu.h
+	<_common.h>
+	<_light.h>
+	<_model.h>
+	<_inputs.h>
+	<_textureLoader.h>
+	<_parallax.h>
+	<_skyBox.h>
+	<_sprite.h>
+	<_timer.h>
+	<_3DModelLoader.h>
+	<_camera.h>
+	<_bullets.h>
+	<_collisionCheck.h>
+	<_sounds.h>
+	<_gltfLoader.h>
+	<_sceneSwitcher.h>
+
+1763526377 c:\users\team4\desktop\parkour_game\game\include\_sceneswitcher.h
+	<_common.h>
+
+1763523945 source:c:\users\team4\desktop\parkour_game\game\src\_sceneswitcher.cpp
+	"_sceneSwitcher.h"
 

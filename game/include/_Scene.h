@@ -16,6 +16,7 @@
 #include <_collisionCheck.h>
 #include <_sounds.h>
 #include <_gltfLoader.h>
+#include <_sceneSwitcher.h>
 
 class _Scene
 {
@@ -54,6 +55,7 @@ public:
     _camera *myCam;
     _collisionCheck *myCol;
     _sounds *snds;
+    _sceneSwitcher *sceneSwitcher = new _sceneSwitcher();
 
     _bullets b[10];
 
