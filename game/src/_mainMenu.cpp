@@ -97,9 +97,12 @@ void _mainMenu::initGL()
 
     // ---- Sounds ----
     snds->initSounds();
-    snds->playSound("sounds/untitled.mp3");
+    snds->playSound("sounds/gameThemeForClass.mp3");
+
+    snds->eng->setSoundVolume(0.3f);
 
     menuTex->loadTexture("images/menuTexture.png");
+    menuUI->loadTexture("images/menuUI.png");
 }
 
 
@@ -120,42 +123,101 @@ void _mainMenu::updateScene()
         myInput->keyPressed(myCam, smoothDT);
         //myCam->update(smoothDT, myCol, ground);
     }
+
+    bgOffsetX += (bgTargetX - bgOffsetX) * bgMoveSpeed;
+    bgOffsetY += (bgTargetY - bgOffsetY) * bgMoveSpeed;
+
+    POINT cursor;
+    GetCursorPos(&cursor);
+    ScreenToClient(windowHandle, &cursor); // convert to window coords if needed
+
+    updateBackgroundOffset(deltaTime, windowHandle, screenWidth, screenHeight);
 }
 
 
 void _mainMenu::drawScene()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    menuTex->bindTexture();
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, 1, 0, 1, -1, 1);
+
+    glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // Camera
-    myCam->setUpCamera();
+    // Compute quad coordinates with scale and offset
+    float halfScaleX = bgScale / 2.0f;
+    float halfScaleY = bgScale / 2.0f;
 
+    float left   = 0.5f - halfScaleX + bgOffsetX;
+    float right  = 0.5f + halfScaleX + bgOffsetX;
+    float bottom = 0.5f - halfScaleY + bgOffsetY;
+    float top    = 0.5f + halfScaleY + bgOffsetY;
 
-
-    // Draw UI
-    glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(0, 1, 0, 1, -1, 1);
-
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-
-        glDisable(GL_DEPTH_TEST);
-
-        menuTex->bindTexture();
-
-        glBegin(GL_QUADS);
-            glTexCoord2f(0, 1); glVertex2f(0, 0);   // bottom-left
-            glTexCoord2f(1, 1); glVertex2f(1, 0);   // bottom-right
-            glTexCoord2f(1, 0); glVertex2f(1, 1);   // top-right
-            glTexCoord2f(0, 0); glVertex2f(0, 1);   // top-left
-        glEnd();
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 1); glVertex2f(left, bottom);
+        glTexCoord2f(1, 1); glVertex2f(right, bottom);
+        glTexCoord2f(1, 0); glVertex2f(right, top);
+        glTexCoord2f(0, 0); glVertex2f(left, top);
+    glEnd();
 
     glEnable(GL_DEPTH_TEST);
+
+
+
+
+
+
+
+
+
+
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // setup orthographic projection for 0..1 screen space
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0, 1, 0, 1, -1, 1);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    // bind the logo texture
+    menuUI->bindTexture();
+
+    // draw quad
+    float logoWidth  = 0.3f;
+    float logoHeight = 0.2f;
+    float logoLeft   = 0.5f - logoWidth / 2.0f;
+    float logoRight  = 0.5f + logoWidth / 2.0f;
+    float logoBottom = 0.7f - logoHeight / 2.0f;
+    float logoTop    = 0.7f + logoHeight / 2.0f;
+
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 1); glVertex2f(0, 0);
+        glTexCoord2f(1, 1); glVertex2f(1, 0);
+        glTexCoord2f(1, 0); glVertex2f(1, 1);
+        glTexCoord2f(0, 0); glVertex2f(0, 1);
+    glEnd();
+
+    // restore projection/modelview
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+
+    glEnable(GL_DEPTH_TEST);
+
+
 }
 
 int _mainMenu::winMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -205,4 +267,37 @@ int _mainMenu::winMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
 
     return 0;
+}
+
+void _mainMenu::updateBackgroundOffset(float dt, HWND hWnd, int screenWidth, int screenHeight)
+{
+    // Step 1: increment delay timer
+    if (bgDelayTimer < bgDelayDuration)
+    {
+        bgDelayTimer += dt;
+        bgMoveFactor = bgDelayTimer / bgDelayDuration; // ramps from 0 -> 1
+        if (bgMoveFactor > 1.0f) bgMoveFactor = 1.0f;
+    }
+    else
+    {
+        bgMoveFactor = 1.0f;
+    }
+
+    // Step 2: get mouse position
+    POINT cursor;
+    GetCursorPos(&cursor);
+    ScreenToClient(hWnd, &cursor);
+
+    float nx = ((float)cursor.x / screenWidth) - 0.5f;
+    float ny = ((float)cursor.y / screenHeight) - 0.5f;
+
+    float maxOffsetX = (bgScale - 1.0f) / 2.0f;
+    float maxOffsetY = (bgScale - 1.0f) / 2.0f;
+
+    bgTargetX = nx * maxOffsetX * 2.0f;
+    bgTargetY = -ny * maxOffsetY * 2.0f;
+
+    // Step 3: slowly interpolate toward target, scaled by bgMoveFactor
+    bgOffsetX -= (bgTargetX - bgOffsetX) * bgMoveSpeed * bgMoveFactor;
+    bgOffsetY -= (bgTargetY - bgOffsetY) * bgMoveSpeed * bgMoveFactor;
 }

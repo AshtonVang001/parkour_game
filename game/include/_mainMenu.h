@@ -39,7 +39,36 @@ public:
 
     float fov = 60.0f; // default is 45.0
 
+
+
+    // Current offset of the background
+    float bgOffsetX = 0.0f;
+    float bgOffsetY = 0.0f;
+
+    // Target offset (where it wants to move based on mouse)
+    float bgTargetX = 0.0f;
+    float bgTargetY = 0.0f;
+
+    // Speed of movement (0 < speed <= 1)
+    float bgMoveSpeed = 0.005f;
+
+    // Image scale relative to screen (1.0 = fits exactly)
+    float bgScale = 1.02f; // 10% larger than screen
+
+    float bgDelayTimer = 0.0f;
+    float bgDelayDuration = 1.0f;
+    float bgMoveFactor = 0.0f;
+
+    void updateBackgroundOffset(float dt, HWND hWnd, int screenWidth, int screenHeight);
+
+    int screenWidth;
+    int screenHeight;
+    HWND windowHandle;
+
+
+
     _textureLoader *menuTex = new _textureLoader();
+    _textureLoader *menuUI = new _textureLoader();
 
 
     _timer *myTime;

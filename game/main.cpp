@@ -363,6 +363,10 @@ int WINAPI WinMain(
 	int	fullscreenWidth  = GetSystemMetrics(SM_CXSCREEN);
     int	fullscreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
+    myMenu->windowHandle = hWnd;
+    myMenu->screenWidth = fullscreenWidth;
+    myMenu->screenHeight = fullscreenHeight;
+
 	// Ask The User Which Screen Mode They Prefer
 	//if (MessageBox(NULL,"Would You Like To Run In Fullscreen Mode?", "Start FullScreen?",MB_YESNO|MB_ICONQUESTION)==IDNO)
 	//{
@@ -375,13 +379,6 @@ int WINAPI WinMain(
 	{
 		return 0;				        // Quit If Window Was Not Created
 	}
-    myScene->hWnd = hWnd;
-    myScene->initGL();
-    myScene->reSizeScene(fullscreenWidth, fullscreenHeight);
-    ShowCursor(FALSE);      //Change this if we want mouse in menus!!!
-
-    myMenu->initGL();
-    myMenu->reSizeScene(fullscreenWidth, fullscreenHeight);
 
 
 	while(!done)					    // Loop That Runs While done=FALSE
@@ -420,6 +417,8 @@ int WINAPI WinMain(
                 switch (sceneSwitcher->currentScene)
                 {
                     case SCENE_GAME:
+                        myMenu->snds->stopSounds();
+
                         ShowCursor(FALSE);
                         myScene->updateScene();                   // update with delta time
 

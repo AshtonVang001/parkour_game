@@ -28,7 +28,6 @@ public:
     void reSizeScene(int width, int height);
     void drawScene();
     void updateScene();
-        HWND hWnd;
     int winMsg(HWND, UINT, WPARAM, LPARAM);
     void mouseMapping(int, int);
 

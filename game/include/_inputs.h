@@ -17,9 +17,6 @@ class _inputs
 
         bool keys[256] = {false};
 
-        int screenWidth;
-        int screenHeight;
-
         void keyPressed(_model *);                          //key pressed
         void keyUp();                                       //key released              (blank because not in use)
 

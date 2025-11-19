@@ -17,6 +17,7 @@ class _sounds
         void playMusic(char *);
         void playSound(char *);
         void pauseSound(char *);
+        void stopSounds();
         void initSounds();
 
     protected:

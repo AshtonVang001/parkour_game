@@ -153,22 +153,7 @@ void _inputs::mouseWheel(_model* mdl, double delta)
 
 
 
-void _inputs::mouseMove(_model* mdl, double x, double y)
-{
-    if(isRotationActive){                                   //if rotation
-        mdl->rotateY += (x - prev_MouseX) / 3.0;            //around y axis
-        mdl->rotateX += (y - prev_MouseY) / 3.0;            //around x axis
-    }
-    if(isTranslationActive){                                //if translation
-        mdl->posX += (x - prev_MouseX) / 100.0;             //change x position
-        mdl->posY -= (y - prev_MouseY) / 100.0;             //change y position
-    }
-
-    prev_MouseX = x;                                        //reset mouse x
-    prev_MouseY = y;                                        //reset mouse y
-}
-
-void _inputs::mouseMove(_camera* cam, double x, double y)
+void _inputs::mouseMove(_camera* myCamera, double x, double y)
 {
     float sensitivity = 0.1f; // tweak for mouse speed
 

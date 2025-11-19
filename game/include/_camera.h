@@ -28,15 +28,12 @@ class _camera
         void camInit();             //initialize camera
         void camReset();            //reset camera
         void update(float deltaTime, _collisionCheck* colCheck, gltfModel* groundMesh);
-        void updateRotation();
-
-        void addMouseDelta(int dx, int dy);
 
         void rotateXY();            //rotate XY direction
         void rotateUp();            //rotate up & down
 
-        void moveForward(float amt);  //move camera forward & backward
-        void moveRight(float amt);  //move camera left & right
+        void camMoveFdBd(float dir);  //move camera forward & backward
+        void camMoveLtRt(float dir);  //move camera left & right
 
         void setUpCamera();         //set camera using glulookat
 

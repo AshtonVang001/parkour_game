@@ -8,7 +8,6 @@ _Scene::_Scene()
     myTime = new _timer();
     clickCount = 0;
 
-
     // Set all pointers null until initGL()
     myLight = nullptr;
     myModel = nullptr;
@@ -171,10 +170,6 @@ void _Scene::updateScene()
     if (myInput && myCam) {
         myInput->keyPressed(myCam, smoothDT);
         //myCam->update(smoothDT, myCol, ground);
-    }
-
-    if(myCam){
-        myCam->updateRotation();
     }
 }
 

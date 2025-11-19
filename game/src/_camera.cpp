@@ -12,14 +12,13 @@ _camera::~_camera()
 
 void _camera::camInit()
 {
-    eye = {0, 0, 3};
-    des = {0, 0, 0};
-    up =  {0, 1, 0};
+    eye.x = eye.y = 0;
+    eye.z = 10;
 
-    yaw = -90.0f;
-    pitch = 0.0f;
-    sensitivity = 0.15f;
+    des.x = des.y = des.z = 0;
 
+    up.x = up.z = 0;
+    up.y = 1;
 
     step = 0.5;
 
@@ -74,7 +73,7 @@ void _camera::rotateUp()
 
 }
 
-void _camera::updateRotation()
+void _camera::camMoveFdBd(float dir)
 {
     // Forward vector (ignore Y)
     vec3 forward = des - eye;
@@ -93,8 +92,7 @@ void _camera::updateRotation()
     des.z += forward.z * dir;
 }
 
-
-void _camera::moveForward(float amt)
+void _camera::camMoveLtRt(float dir)
 {
     // Forward vector (ignore Y)
     vec3 forward = des - eye;

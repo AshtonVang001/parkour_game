@@ -25,7 +25,12 @@ void _sounds::playSound(char* filename)
 
 void _sounds::pauseSound(char* filename)
 {
-    eng->play2D(filename, true, false);
+    //eng->play2D(filename, true, false);
+}
+
+void _sounds::stopSounds()
+{
+    eng->stopAllSounds();
 }
 
 void _sounds::initSounds()
