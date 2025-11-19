@@ -176,6 +176,27 @@ void _Scene::updateScene()
 
 void _Scene::drawScene()
 {
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    float aspect = (float)width / (float)height;
+    gluPerspective(fov, aspect, 0.1f, 1000.0f);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+
+    // Make sure lighting/blend state is what the game expects
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glDisable(GL_BLEND); // optional: enable later where needed
+    glEnable(GL_TEXTURE_2D);
+
+
+
+
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 

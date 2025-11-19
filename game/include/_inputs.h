@@ -7,6 +7,7 @@
 #include <_sprite.h>
 #include <_camera.h>
 #include <_3DModelLoader.h>
+#include <_sceneSwitcher.h>
 
 class _inputs
 {

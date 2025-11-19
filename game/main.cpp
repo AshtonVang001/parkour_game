@@ -14,10 +14,14 @@
 #include <windows.h>	// Header File For Windows
 #include <_common.h>
 #include <_timer.h>
+#include <_sceneSwitcher.h>
 
 #include <_Scene.h>
+#include <_mainMenu.h>
 
 _Scene *myScene = new _Scene();     //create scene class instance
+_mainMenu *myMenu = new _mainMenu();
+_sceneSwitcher* sceneSwitcher = new _sceneSwitcher();
 _timer myTimer;
 
 using namespace std;
@@ -244,7 +248,10 @@ BOOL CreateGLWindow(char* title, int width, int height, int bits, bool fullscree
 	myScene->initGL();                                      //initialize GL scene
 	myScene->reSizeScene(width, height);
 
-	ShowCursor(FALSE);
+	myMenu->initGL();
+	myMenu->reSizeScene(width, height);
+
+	//ShowCursor(FALSE);
 
 	return TRUE;							                // Success
 }
@@ -297,6 +304,7 @@ LRESULT CALLBACK WndProc(
 		{
 			keys[wParam] = TRUE;	// If So, Mark It As TRUE
 			myScene->winMsg(hWnd, uMsg, wParam, lParam);                //main to scene
+			myMenu->winMsg(hWnd, uMsg, wParam, lParam);
 			return 0;			    // Jump Back
 		}
 
@@ -304,6 +312,7 @@ LRESULT CALLBACK WndProc(
 		{
 			keys[wParam] = FALSE;	// If So, Mark It As FALSE
 			myScene->winMsg(hWnd, uMsg, wParam, lParam);                //main to scene
+			myMenu->winMsg(hWnd, uMsg, wParam, lParam);
 
 			return 0;			    // Jump Back
 		}
@@ -312,6 +321,7 @@ LRESULT CALLBACK WndProc(
 		{
 		    //cout << "Resize ";      // Prints any time the window is resized
 		    myScene->reSizeScene(LOWORD(lParam), HIWORD(lParam));
+		    myMenu->reSizeScene(LOWORD(lParam), HIWORD(lParam));
 
                                     // LoWord=Width, HiWord=Height
 			return 0;			    // Jump Back
@@ -326,6 +336,7 @@ LRESULT CALLBACK WndProc(
         case WM_MOUSEMOVE:
         case WM_MOUSEWHEEL:
             myScene->winMsg(hWnd, uMsg, wParam, lParam);                //main to scene
+            myMenu->winMsg(hWnd, uMsg, wParam, lParam);
             break;
 
 	}
@@ -368,6 +379,9 @@ int WINAPI WinMain(
     myScene->initGL();
     myScene->reSizeScene(fullscreenWidth, fullscreenHeight);
 
+    myMenu->initGL();
+    myMenu->reSizeScene(fullscreenWidth, fullscreenHeight);
+
 
 	while(!done)					    // Loop That Runs While done=FALSE
 	{
@@ -387,7 +401,7 @@ int WINAPI WinMain(
 	  else						        // If There Are No Messages
 		{
 			// Draw The Scene.  Watch For ESC Key And Quit Messages From DrawGLScene()
-			if (!active || keys[VK_ESCAPE])	// Active?  Was There A Quit Received?
+			if (!active)// || keys[VK_ESCAPE])	// Active?  Was There A Quit Received?
 			{
 				done=TRUE;		        // ESC or DrawGLScene Signalled A Quit
 			}
@@ -395,21 +409,48 @@ int WINAPI WinMain(
 			{
 			    myTimer.updateDeltaTime();                // UPDATE deltaTime ONCE PER FRAME
 
-                myScene->updateScene();                   // update with delta time
-
-
-                // Center the cursor
                 POINT center;
-                center.x = fullscreenWidth / 2;
-                center.y = fullscreenHeight / 2;
-                SetCursorPos(center.x, center.y);
 
-                // Update previous mouse positions to the center so next delta is relative
-                myScene->myInput->prev_MouseX = center.x;
-                myScene->myInput->prev_MouseY = center.y;
+                if (keys['N']) {
+                    sceneSwitcher->currentScene = SCENE_GAME;
+                }
 
 
-                myScene->drawScene();                     // draw after update
+                switch (sceneSwitcher->currentScene)
+                {
+                    case SCENE_GAME:
+                        ShowCursor(FALSE);
+                        myScene->updateScene();                   // update with delta time
+
+
+                        // Center the cursor
+
+                        center.x = fullscreenWidth / 2;
+                        center.y = fullscreenHeight / 2;
+                        SetCursorPos(center.x, center.y);
+
+                        // Update previous mouse positions to the center so next delta is relative
+                        myScene->myInput->prev_MouseX = center.x;
+                        myScene->myInput->prev_MouseY = center.y;
+
+
+                        myScene->drawScene();                     // draw after update
+
+                        if (keys[VK_ESCAPE]) {
+                            sceneSwitcher->currentScene = SCENE_MENU;
+                        }
+
+                        break;
+
+                    case SCENE_MENU:
+                        myMenu->updateScene();                   // update with delta time
+                        myMenu->drawScene();                     // draw after update
+
+                        if (keys['Q']) {
+                            done = TRUE;
+                        }
+                        break;
+                }
 
 				SwapBuffers(hDC);	    // Swap Buffers (Double Buffering)
 			}
