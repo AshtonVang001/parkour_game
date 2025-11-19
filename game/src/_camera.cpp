@@ -21,7 +21,18 @@ void _camera::camInit()
     sensitivity = 0.15f;
 
 
-    step = 0.1f;
+    step = 0.5;
+
+    distance = sqrt(pow((eye.x-des.x),2) + pow((eye.y-des.y),2) + pow((eye.z-des.z),2));
+
+    rotAngle.x = rotAngle.y = 0;
+
+    verticalVel = 0.0f;
+    isJumping = false;
+    gravity = -40.0f;   // stronger than real gravity for game feel
+    groundY = eye.y;
+
+
 }
 
 void _camera::camReset()
@@ -43,10 +54,20 @@ void _camera::camReset()
 
 void _camera::rotateXY()
 {
-    eye.x = des.x + distance * cos(rotAngle.y * PI/180.0) * sin(rotAngle.x * PI/180.0);
-    eye.y = des.y + distance * sin(rotAngle.y * PI/180.0);
-    eye.z = des.z + distance * cos(rotAngle.y * PI/180.0) * cos(rotAngle.x * PI/180.0);
+    // Clamp pitch
+    if (rotAngle.y > 89.0f) rotAngle.y = 89.0f;
+    if (rotAngle.y < -89.0f) rotAngle.y = -89.0f;
+
+    float yaw   = rotAngle.x * PI / 180.0f;
+    float pitch = rotAngle.y * PI / 180.0f;
+
+    lookDir.x = cos(pitch) * sin(yaw);
+    lookDir.y = sin(pitch);
+    lookDir.z = cos(pitch) * cos(yaw);
+
+    des = eye + lookDir;
 }
+
 
 void _camera::rotateUp()
 {
@@ -55,41 +76,82 @@ void _camera::rotateUp()
 
 void _camera::updateRotation()
 {
-    float radYaw = yaw * PI / 180.0f;
-    float radPitch = pitch * PI / 180.0f;
+    // Forward vector (ignore Y)
+    vec3 forward = des - eye;
+    forward.y = 0;
+    float len = sqrt(forward.x*forward.x + forward.z*forward.z);
+    if (len != 0)
+    {
+        forward.x /= len;
+        forward.z /= len;
+    }
 
-    des.x = eye.x + cos(radYaw) * cos(radPitch);
-    des.y = eye.y + sin(radPitch);
-    des.z = eye.z + sin(radYaw) * cos(radPitch);
+    // Move in the correct direction: W = +dir
+    eye.x += forward.x * dir;
+    eye.z += forward.z * dir;
+    des.x += forward.x * dir;
+    des.z += forward.z * dir;
 }
 
 
 void _camera::moveForward(float amt)
 {
-    eye.x += amt * cos(yaw * PI / 180.0f);
-    eye.z += amt * sin(yaw * PI / 180.0f);
+    // Forward vector (ignore Y)
+    vec3 forward = des - eye;
+    forward.y = 0;
+    float len = sqrt(forward.x*forward.x + forward.z*forward.z);
+    if (len != 0)
+    {
+        forward.x /= len;
+        forward.z /= len;
+    }
+
+    // Right vector (perpendicular in XZ plane)
+    vec3 right;
+    right.x = forward.z;
+    right.y = 0;
+    right.z = -forward.x;
+
+    // Move in the correct direction: D = +dir, A = -dir
+    eye.x += right.x * dir;
+    eye.z += right.z * dir;
+    des.x += right.x * dir;
+    des.z += right.z * dir;
 }
 
-void _camera::moveRight(float amt)
-{
-    eye.x += amt * cos((yaw + 90) * PI / 180.0f);
-    eye.z += amt * sin((yaw + 90) * PI / 180.0f);
-}
-
-void _camera::addMouseDelta(int dx, int dy)
-{
-    float sensitivity = 0.1f;
-    yaw   += dx * sensitivity;
-    pitch -= dy * sensitivity;
-
-    if(pitch > 89) pitch = 89;
-    if(pitch < -89) pitch = -89;
-
-    updateRotation();
-}
 
 
 void _camera::setUpCamera()
 {
     gluLookAt(eye.x, eye.y, eye.z, des.x, des.y, des.z, up.x, up.y, up.z);
+}
+
+void _camera::jump()
+{
+    if (!isJumping) {
+        verticalVel = 15.0f;   // jump strength
+        isJumping = true;
+    }
+}
+
+
+void _camera::updateVertical(float deltaTime)
+{
+    if (isJumping)
+    {
+        verticalVel += gravity * deltaTime;
+        float nextY = eye.y + verticalVel * deltaTime;
+
+        if (nextY <= groundY)
+        {
+            nextY = groundY;
+            verticalVel = 0.0f;
+            isJumping = false;
+        }
+
+        eye.y = nextY;
+
+        // do NOT modify des.y
+        des = eye + lookDir;
+    }
 }

@@ -35,6 +35,11 @@ public:
     int width, height;
     int clickCount;
 
+    float animTime = 0.0f;
+
+    float fov = 60.0f; // default is 45.0
+
+
     _timer *myTime;
 
     _light *myLight;

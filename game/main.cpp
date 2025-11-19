@@ -244,6 +244,7 @@ BOOL CreateGLWindow(char* title, int width, int height, int bits, bool fullscree
 	myScene->initGL();                                      //initialize GL scene
 	myScene->reSizeScene(width, height);
 
+	ShowCursor(FALSE);
 
 	return TRUE;							                // Success
 }
@@ -354,9 +355,9 @@ int WINAPI WinMain(
 	// Ask The User Which Screen Mode They Prefer
 	//if (MessageBox(NULL,"Would You Like To Run In Fullscreen Mode?", "Start FullScreen?",MB_YESNO|MB_ICONQUESTION)==IDNO)
 	//{
-		//fullscreen=FALSE;			    // Windowed Mode
+	//	fullscreen=FALSE;			    // Windowed Mode
 	//}
-    fullscreen=TRUE;
+
 	// Create Our OpenGL Window
 
 	if (!CreateGLWindow("Game Engine Lesson 01",fullscreenWidth,fullscreenHeight,256,fullscreen))
@@ -396,6 +397,19 @@ int WINAPI WinMain(
 			    myTimer.updateDeltaTime();                // UPDATE deltaTime ONCE PER FRAME
 
                 myScene->updateScene();                   // update with delta time
+
+
+                // Center the cursor
+                POINT center;
+                center.x = fullscreenWidth / 2;
+                center.y = fullscreenHeight / 2;
+                SetCursorPos(center.x, center.y);
+
+                // Update previous mouse positions to the center so next delta is relative
+                myScene->myInput->prev_MouseX = center.x;
+                myScene->myInput->prev_MouseY = center.y;
+
+
                 myScene->drawScene();                     // draw after update
 
 				SwapBuffers(hDC);	    // Swap Buffers (Double Buffering)

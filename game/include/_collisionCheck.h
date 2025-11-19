@@ -1,4 +1,4 @@
-
+/**
 #ifndef _COLLISIONCHECK_H
 #define _COLLISIONCHECK_H
 
@@ -22,9 +22,10 @@ class _collisionCheck
 };
 
 #endif // _COLLISIONCHECK_H
+**/
 
 
-/**
+
 #ifndef _COLLISIONCHECK_H
 #define _COLLISIONCHECK_H
 
@@ -72,4 +73,3 @@ private:
 };
 
 #endif
-**/

@@ -5,7 +5,12 @@
 #include <SOIL2.h>
 
 _gltfLoader::_gltfLoader() {}
-_gltfLoader::~_gltfLoader() {}
+_gltfLoader::~_gltfLoader() {
+    if (data) {
+        //cgltf_free(data);
+        //data = nullptr;
+    }
+}
 
 GltfModel* _gltfLoader::loadModel(const std::string& filename)
 {
@@ -14,18 +19,24 @@ GltfModel* _gltfLoader::loadModel(const std::string& filename)
     cgltf_options options = {};
     cgltf_data* data = nullptr;
 
-    cgltf_result result = cgltf_parse_file(&options, filename.c_str(), &data);
-    if (result != cgltf_result_success) {
+    cgltf_result res = cgltf_parse_file(&options, filename.c_str(), &data);
+    if (res != cgltf_result_success) {
         std::cerr << "Failed to parse GLTF file: " << filename << std::endl;
         return nullptr;
     }
 
-    result = cgltf_load_buffers(&options, data, filename.c_str());
-    if (result != cgltf_result_success) {
+    res = cgltf_load_buffers(&options, data, filename.c_str());
+    if (res != cgltf_result_success) {
         std::cerr << "Failed to load GLTF buffers: " << filename << std::endl;
-        cgltf_free(data);
+        //cgltf_free(data);
         return nullptr;
     }
+
+    // ---- Store cgltf_data in the model ----
+    model->setCgltfData(data);   // <-- this keeps a pointer inside your model
+
+    std::cout << "Animations: " << data->animations_count << std::endl;
+
 
     // --- Extract first material texture (base color) if present ---
     if (data->materials_count > 0) {
@@ -111,10 +122,9 @@ GltfModel* _gltfLoader::loadModel(const std::string& filename)
         }
     }
 
-    cgltf_free(data);
-
     // Upload to GPU
     model->uploadToGPU();
+    model->setCgltfData(data);
 
     return model;
 }

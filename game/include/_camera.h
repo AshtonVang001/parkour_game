@@ -25,15 +25,6 @@ class _camera
 
         enum {FORWARD, BACKWARD, LEFT, RIGHT};
 
-        float gravity;  // gravity strength
-        float groundOffset;
-
-        float yaw, pitch;
-        float sensitivity;
-
-        vec3 velocity;
-        vec3 pos;
-
         void camInit();             //initialize camera
         void camReset();            //reset camera
         void update(float deltaTime, _collisionCheck* colCheck, gltfModel* groundMesh);
@@ -48,6 +39,24 @@ class _camera
         void moveRight(float amt);  //move camera left & right
 
         void setUpCamera();         //set camera using glulookat
+
+
+
+        // In _camera.h
+        void jump();
+        void updateVertical(float);
+        float lerp(float, float, float);
+
+        float verticalVel;   // vertical velocity for jump
+        bool isJumping;      // true while in the air
+        float gravity;       // e.g., -9.8 units/sec^2
+        float groundY;       // the Y position of the floor
+
+        float targetY;
+        vec3 lookDir;
+
+
+
 
     protected:
 
